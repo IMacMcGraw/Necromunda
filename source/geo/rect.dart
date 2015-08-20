@@ -44,6 +44,15 @@ class Rect implements Shape2D{
 	/// Value equality between two rectangles, invoked with the '==' operator.
 	bool operator  ==(Rect that) => ((x==that.x)&&(y==that.y)&&(w==that.w)&&(h==that.h));
 
+	///
+	bool contains(Vector point){
+		if(point.x < this.left) return false;
+		if(point.x > this.right) return false;
+		if(point.y < this.top) return false;
+		if(point.y > this.bottom) return false;
+		return true;
+	}
+
 	/// Returns true if this rectangle overlaps rect b, and false otherwise.
 	bool overlaps(Rect that){
 		if(right < that.left) return false;
