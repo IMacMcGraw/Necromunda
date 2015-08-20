@@ -1,5 +1,5 @@
 
-library test;
+library geo_test;
 
 import '../geo/geo.dart' as geo;
 import 'package:test/test.dart';
