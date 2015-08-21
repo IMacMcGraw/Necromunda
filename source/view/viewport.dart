@@ -25,6 +25,6 @@ class Viewport{
 		});
 	}
 
-	get onMouseDown;
+	//get onMouseDown;
 
 }

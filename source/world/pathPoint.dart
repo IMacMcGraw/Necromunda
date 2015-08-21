@@ -1,5 +1,5 @@
 
-part of geo;
+part of world;
 
 class PathPoint implements WorldShape{
 	

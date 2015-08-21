@@ -1,8 +1,8 @@
 
 library view;
 
-import 'dart:collection' as collection;
-import 'dart:math' as math;
+import 'dart:collection';
+import 'dart:math';
 
 part 'viewport.dart';
 part 'surface.dart';

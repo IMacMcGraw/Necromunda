@@ -17,7 +17,7 @@ class Vector implements Shape2D{
 	scale(num a){ x *= a; y *= a;  }
 
 	/// Returns the length of this vector.
-	num get length => math.sqrt(x*x + y*y);
+	num get length => sqrt(x*x + y*y);
 
 	/// Returns a parallel vector of magnitude 1.
 	Vector get unitVector => new Vector(x/length, y/length);

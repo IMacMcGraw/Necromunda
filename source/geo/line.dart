@@ -64,8 +64,8 @@ class Line implements Shape2D{
 			}
 
 			var y = this._evaluate(vert.p1.x);
-			if( y < math.min(vert.p1.y, vert.p2.y) ) return null;
-			if( y > math.max(vert.p1.y, vert.p2.y) ) return null;
+			if( y < min(vert.p1.y, vert.p2.y) ) return null;
+			if( y > max(vert.p1.y, vert.p2.y) ) return null;
 			return new Vector(vert.p1.x, y);
 		}
 
