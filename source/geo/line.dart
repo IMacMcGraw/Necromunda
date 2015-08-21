@@ -20,15 +20,10 @@ class Line implements Shape2D{
 	Vector get unitVector => vector.unitVector;
 
 	/// Returns a rectangle with origin at a and opposing corner at b.
-	Rect get boundingBox => new Rect.byVector(p1, vector);
-
-	//num get xMax
-	//num get xMin
-	//num get yMax
-	//num get yMin
+	Rect get boundingBox => new Rect.byCorners(p1, p2);
 
 	/// Returns a string representation of this object.
-	String toString() => 'Line: ($p1.x, $p1.y) -> ($p2.x, $p2.y)';
+	String toString() => 'Line: (${p1.x}, ${p1.y}) -> (${p2.x}, ${p2.y})';
 
 
 	/// Is this line vertical?
@@ -37,15 +32,15 @@ class Line implements Shape2D{
 	/// Is this line horizontal?
 	bool get _isHorizontal => p1.y == p2.y;
 
-	/// Returns the inverse of this function, with x and y values interchanged.
+	/// Returns the inverse of this line, with x and y values interchanged.
 	Line get _inverse => new Line.byValue(p1.y, p1.x, p2.y, p2.x);
 
-	/// The slope of the line, rise over run.
+	/// Returns the slope of this line, its rise over run.
 	num get _m => (p2.y - p1.y)/(p2.x - p1.x);
-	/// The vertical displacement of the line from the origin.
+	/// Returns the vertical displacement of this line from the origin.
 	num get _b => (p1.y - _m*p1.x);
-	/// y = m*x + b
-	num _evalY(num x) => _m*x + _b;
+	/// Evaluates this line at x: y = m*x + b.
+	num _evaluate(num x) => _m*x + _b;
 
 
 	/// Returns the point of intersection nearest to the origin of this line if it exists, and null otherwise.
@@ -68,7 +63,7 @@ class Line implements Shape2D{
 				else return nearestAlongVertical(vert.p1, skew.p1, skew.p2);
 			}
 
-			var y = this._evalY(vert.p1.x);
+			var y = this._evaluate(vert.p1.x);
 			if( y < math.min(vert.p1.y, vert.p2.y) ) return null;
 			if( y > math.max(vert.p1.y, vert.p2.y) ) return null;
 			return new Vector(vert.p1.x, y);
@@ -87,10 +82,10 @@ class Line implements Shape2D{
 			// This is the x-value of the apparent intersection.
 			var x = (Q._b - P._b)/(P._m - Q._m);
 
-			var apparentIntersect = new Vector(x, P._evalY(x));
+			var apparentIntersect = new Vector(x, P._evaluate(x));
 
 			if(!P.boundingBox.contains(apparentIntersect)) return null;
-			if(!P.boundingBox.contains(apparentIntersect)) return null;
+			if(!Q.boundingBox.contains(apparentIntersect)) return null;
 			return apparentIntersect;
 		}
 
@@ -105,10 +100,5 @@ class Line implements Shape2D{
 
 		return intersectWithSkew(this, that);
 	}
-
-
-
-
-
 
 }

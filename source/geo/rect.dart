@@ -1,78 +1,121 @@
 
 part of geo;
 
+/// The methods of the Rect class, including equality between
+/// Rects, depend only on the max and min x and y values of an
+/// instance. For this reason, a Rect with negative dimensions
+/// behaves equivalently to, and is equal to a Rect with positive
+/// dimensions, if both occupy the same region in 2-dimensional space.
 class Rect implements Shape2D{
 
-	num x, y, w, h;
+	num _xMin, _xMax, _yMin, _yMax;
 
-	Rect(this.x, this.y, this.w, this.h);
-	Rect.byVector(Vector origin, Vector dimensions) : this(origin.x, origin.y, dimensions.x, dimensions.y);
-	Rect.zero() : this(.0,.0,.0,.0);
-
-	Vector get origin       => new Vector(x, y);
-	Vector get dimensions   => new Vector(w, h);
-	set origin(Vector v)    { x = v.x; y = v.y; }
-	set dimensions(Vector v){ w = v.x; h = v.y;	}
-
-
-	// It is possible that w and h are negative values?
-	num get left    => math.min(x, x + w);
-	num get right   => math.max(x, x + w);
-	num get top     => math.min(y, y + h);
-	num get bottom  => math.max(y, y + h);
-
-	/// Will drag this rectangles left edge to the specified x-coordinate.
-	// TODO: Make these methods work for positive and negative widths and heights.
-	void set left(num l){
-		w += x - l;
-		x = l;
-	}
-	/// Will drag this rectangles right edge to the specified x-coordinate.
-	void set right(num r){
-		w = r - x;
-	}
-	/// Will drag this rectangles top edge to the specified y-coordinate.
-	void set top(num t){
-		h += y -t;
-		y = t;
-	}
-	/// Will drag this rectangles bottom edge to the specified y-coordinate.
-	void set bottom(num b){
-		h = y - b;
+	/// Creates a Rect, bounded by two x and two y values.
+	Rect(num x1, num x2, num y1, num y2){
+		_xMin = min(x1, x2);
+		_xMax = max(x1, x2);
+		_yMin = min(y1, y2);
+		_yMax = max(y1, y2);
 	}
 
-	/// Value equality between two rectangles, invoked with the '==' operator.
-	bool operator  ==(Rect that) => ((x==that.x)&&(y==that.y)&&(w==that.w)&&(h==that.h));
+	/// Creates a rectangle between two opposing corners.
+	Rect.byCorners(Vector a, Vector b) : this(a.x, b.x, a.y, b.y);
 
-	///
+	/// Returns a rect with all zero components.
+	Rect.zero() : this(0,0,0,0);
+
+
+	/// Gets this Rect's xMin value.
+	num get xMin    => _xMin;
+	/// Gets this Rect's xMax value.
+	num get xMax    => _xMax;
+	/// Gets this Rect's yMin value.
+	num get yMin    => _yMin;
+	/// Gets this Rect's yMax value.
+	num get yMax    => _yMax;
+
+
+	/// Sets this Rects xMin value. If the value given is greater
+	/// than the existing xMax value, then this value will become
+	/// the new max value, and the old max will become the new min.
+	void set xMin(num val){
+		if(val > _xMax){
+			_xMin = _xMax;
+			_xMax = val;
+		}
+		else _xMin = val;
+	}
+	/// Sets this Rects xMin value. If the value given is greater
+	/// than the existing xMax value, then this value will become
+	/// the new max value, and the old max will become the new min.
+	void set xMax(num val){
+		if(val < _xMin){
+			_xMax = _xMin;
+			_xMin = val;
+		}
+		else _xMax = val;
+	}
+	/// Sets this Rects xMin value. If the value given is greater
+	/// than the existing xMax value, then this value will become
+	/// the new max value, and the old max will become the new min.
+	void set yMin(num val){
+		if(val > _yMax){
+			_yMin = _yMax;
+			_yMax = val;
+		}
+		else _yMin = val;
+	}
+	/// Sets this Rects xMin value. If the value given is greater
+	/// than the existing xMax value, then this value will become
+	/// the new max value, and the old max will become the new min.
+	void set yMax(num val){
+		if(val < _yMin){
+			_yMax = _yMin;
+			_yMax = val;
+		}
+		else _xMax = val;
+	}
+
+	/// Spatial equality between two rectangles, invoked with the '==' operator.
+	bool operator  ==(Rect that) => (
+		(xMin == that.xMin) &&
+		(xMax == that.xMax) &&
+		(yMin == that.yMin) &&
+		(yMax == that.yMax)
+	);
+
+	/// Returns true if this rectangle contains the given point.
 	bool contains(Vector point){
-		if(point.x < this.left) return false;
-		if(point.x > this.right) return false;
-		if(point.y < this.top) return false;
-		if(point.y > this.bottom) return false;
+		if(point.x < this.xMin) return false;
+		if(point.x > this.xMax) return false;
+		if(point.y < this.yMin) return false;
+		if(point.y > this.yMax) return false;
 		return true;
 	}
 
-	/// Returns true if this rectangle overlaps rect b, and false otherwise.
+	/// Returns true if this Rect overlaps that Rect, and false otherwise.
 	bool overlaps(Rect that){
-		if(right < that.left) return false;
-		if(left > that.right) return false;
-		if(bottom > that.top) return false;
-		if(top < that.bottom) return false;
+		if(xMax < that.xMin) return false;
+		if(xMin > that.xMax) return false;
+		if(yMax < that.yMin) return false;
+		if(yMin > that.yMax) return false;
 		return true;
 	}
 
-	/// Returns the union of this rectangle and rect b: the smallest rectangle that contains both of them.
-	Rect union(Rect b){
-		var union = new Rect.zero();
-		union.left = math.min(left, b.left);
-		union.right = math.max(right, b.right);
-		union.top = math.min(top, b.top);
-		union.bottom = math.max(bottom, b.bottom);
+	/// Returns the smallest or tightest fitting rectangle containing both this Rect and that Rect.
+	Rect union(Rect that){
+		var union = new Rect(
+			min(xMin, that.xMin),
+			max(xMax, that.xMax),
+			min(yMin, that.yMin),
+			max(yMax, that.yMax)
+		);
 		return union;
 	}
 
-	/// Returns a string representation of this object.
-	String toString() => 'Rect: ($x, $y), $w x $h';
+	Rect get boundingBox => new Rect(xMin, xMax, yMin, yMax);
+
+	/// Returns a string representation of this Rect.
+	String toString() => 'Rect: ($xMin, $yMin), ($xMax, $yMax)}';
 
 }
