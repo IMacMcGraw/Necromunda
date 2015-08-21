@@ -57,7 +57,7 @@ main(){
 	});
 
 	group('Rect:', (){
-		test('simple equality and constructor test.', () {
+		test('equality and constructor test.', () {
 			var rectA = new Rect(2, 7, 4, 3);
 			var rectB = new Rect(4, 3, 2, 7);
 			assert(rectA == rectB);
@@ -116,6 +116,72 @@ main(){
 			var rectC = new Rect(-4, -2, 8, 8);
 			assert(rectA.union(rectB) == rectC);
 		});
+	});
+	group('Line:', (){
+		test('equality and constructor test.', (){
+			var A = new Vector(-1, -2);
+			var B = new Vector(4, 8);
+			var lineP = new Line(A, B);
+			var lineQ = new Line.byValue(-1, -2, 4, 8);
+			assert(lineP == lineQ);
+		});
+		test('Length test.', (){
+			var line = new Line.byValue(1, 2, 4, 6);
+			assert(line.length == 5);
+		});
+		test('unitVector test.', (){
+			var line = new Line.byValue(1, 2, 4, 6);
+			assert(line.unitVector== new Vector(0.6,0.8));
+		});
+		test('boundingBox test.', (){
+			var lineP = new Line.byValue(3,7, 6, 2);
+			var lineQ = new Line.byValue(6, 7, 3, 2);
+			assert(lineP.boundingBox == lineQ.boundingBox);
+		});
+		test('intersection test', (){
+			Line p, q;
+			Vector intersect;
+			p = new Line.byValue(0, 2, 2, 0);
+			q = new Line.byValue(0, 0, 2, 2);
+			intersect = new Vector(1, 1);
+			expect(p.intersection(q), equals(intersect));
+			expect(q.intersection(p), equals(intersect));
 
+			p = new Line.byValue(-2, -2, 1, 1);
+			q = new Line.byValue(1, 1, 4, 0);
+			intersect = new Vector(1, 1);
+			expect(p.intersection(q), equals(intersect));
+			expect(q.intersection(p), equals(intersect));
+
+			p = new Line.byValue(0, 0, 4, 4);
+			q = new Line.byValue(3, 2, 1, 0);
+			intersect = null;
+			expect(p.intersection(q), equals(intersect));
+			expect(q.intersection(p), equals(intersect));
+
+			p = new Line.byValue(0, 0, 0, 4);
+			q = new Line.byValue(-2, 2, 2, 2);
+			intersect = new Vector(0, 2);
+			expect(p.intersection(q), equals(intersect));
+			expect(q.intersection(p), equals(intersect));
+
+			p = new Line.byValue(2, -8, 2, 8);
+			q = new Line.byValue(0, 0, 4, 4);
+			intersect = new Vector(2, 2);
+			expect(p.intersection(q), equals(intersect));
+			expect(q.intersection(p), equals(intersect));
+
+			p = new Line.byValue(0, 4, 8, 4);
+			q = new Line.byValue(2, 0, 4, 8);
+			intersect = new Vector(3, 4);
+			expect(p.intersection(q), equals(intersect));
+			expect(q.intersection(p), equals(intersect));
+
+			p = new Line.byValue(1, 2, 2, 3);
+			q = new Line.byValue(0, 0, 4, 4);
+			intersect = null;
+			expect(p.intersection(q), equals(intersect));
+			expect(q.intersection(p), equals(intersect));
+		});
 	});
 }

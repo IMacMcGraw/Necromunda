@@ -36,11 +36,11 @@ class Line implements Shape2D{
 	Line get _inverse => new Line.byValue(p1.y, p1.x, p2.y, p2.x);
 
 	/// Returns the slope of this line, its rise over run.
-	num get _m => (p2.y - p1.y)/(p2.x - p1.x);
+	num get _slope => (p2.y - p1.y)/(p2.x - p1.x);
 	/// Returns the vertical displacement of this line from the origin.
-	num get _b => (p1.y - _m*p1.x);
+	num get _offset => (p1.y - _slope*p1.x);
 	/// Evaluates this line at x: y = m*x + b.
-	num _evaluate(num x) => _m*x + _b;
+	num _evaluate(num x) => _slope*x + _offset;
 
 
 	/// Returns the point of intersection nearest to the origin of this line if it exists, and null otherwise.
@@ -63,7 +63,7 @@ class Line implements Shape2D{
 				else return nearestAlongVertical(vert.p1, skew.p1, skew.p2);
 			}
 
-			var y = this._evaluate(vert.p1.x);
+			var y = skew._evaluate(vert.p1.x);
 			if( y < min(vert.p1.y, vert.p2.y) ) return null;
 			if( y > max(vert.p1.y, vert.p2.y) ) return null;
 			return new Vector(vert.p1.x, y);
@@ -80,7 +80,17 @@ class Line implements Shape2D{
 		// This is the most general case: neither line is horizontal or vertical.
 		Vector intersectWithSkew(Line P, Line Q){
 			// This is the x-value of the apparent intersection.
-			var x = (Q._b - P._b)/(P._m - Q._m);
+
+
+			var pSlope = P._slope;
+			var qSlope = Q._slope;
+			if(pSlope == qSlope){
+				// TODO: Special handling for skew intersection with parallel lines.
+				// I should write some kind of 'median' method in the vector class.
+				return null;
+			}
+
+			var x = (Q._offset - P._offset)/(P._slope - Q._slope);
 
 			var apparentIntersect = new Vector(x, P._evaluate(x));
 
