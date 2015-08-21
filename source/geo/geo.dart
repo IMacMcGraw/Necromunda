@@ -1,7 +1,6 @@
 
 library geo;
 
-import '../base/base.dart';
 import 'dart:math';
 
 //part 'enum.dart';
