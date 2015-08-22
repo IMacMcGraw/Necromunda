@@ -23,6 +23,9 @@ class Alignment{
 	/// Returns values: 0(left), 0.5(center), 1(right)
 	double get horizontalShift => (value%3)/2;
 	/// Return values: 0(top), 0.5(mid), 1(bottom)
-	double get verticalShift => (value/3)/2;
+	double get verticalShift => (value~/3)/2;
+
+
+	bool operator ==(Alignment that) => value == that.value;
 
 }

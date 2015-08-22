@@ -16,7 +16,7 @@ class Viewport{
 		_layers.remove(surface);
 	}
 
-	UnmodifiableListView<Surface> get layers => new UnmodifiableListView(this._layers);//new List.unmodifiable(this._layers);
+	UnmodifiableListView<Surface> get layers => new UnmodifiableListView(this._layers);
 
 	_sortLayersByZIndex(){
 		this._layers.sort( (A, B) {

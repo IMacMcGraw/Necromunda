@@ -1,4 +1,3 @@
 name: app
 
 dependencies:
-  test: any
