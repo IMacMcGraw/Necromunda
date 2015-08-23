@@ -44,7 +44,7 @@ class Line implements Shape2D{
 
 
 	/// Returns the point of intersection nearest to the origin of this line if it exists, and null otherwise.
-	Vector intersection(Line that){
+	Vector intersectWith(Line that){
 
 		// We must know which line is the caller, so that if both lines are vertical
 		// we can return the point of intersection nearest to the caller's origin.

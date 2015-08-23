@@ -3,7 +3,7 @@ part of dartTest;
 
 abstract class _Transcript{
 	bool get _passed;
-	html.HtmlElement get _node;
+	HtmlElement get _node;
 }
 
 abstract class _Aggregate<T extends _Transcript> implements _Transcript{
@@ -16,18 +16,18 @@ abstract class _Aggregate<T extends _Transcript> implements _Transcript{
 
 	bool get _passed{
 		for(T entry in _entries){
-			print(entry);
 			if(!entry._passed){
 				return false;
 			}
 		}
 		return true;
 	}
-	html.Element get _node{
-		var node = new html.UListElement();
-		var title = (new html.SpanElement())
+	UListElement get _node{
+		var node = new UListElement()
+			..style.marginLeft = '2em'
+			..style.paddingLeft = '0em';
+		var title = new SpanElement()
 			..text = _name
-			..style.fontSize = '1em'
 			..style.color = _passed? 'LimeGreen' : 'red';
 		node.append(title);
 		for(T entry in _entries){

@@ -1,3 +1,4 @@
-name: app
+name: Necromunda
 
 dependencies:
+  color: any
