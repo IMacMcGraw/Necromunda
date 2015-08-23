@@ -4,14 +4,11 @@ library necromunda;
 //import 'dart:math' as math;
 //import 'dart:async' as async;
 
+import './view/view.dart';
+
 
 main(){
 
-	AssertFalse();
-	print('Hello world!');
+	var viewport = new Viewport('Henry');
 
-}
-
-AssertFalse(){
-	assert(false);
 }
