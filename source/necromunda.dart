@@ -4,11 +4,16 @@ library necromunda;
 //import 'dart:math' as math;
 //import 'dart:async' as async;
 
+import './events/events.dart';
 import './view/view.dart';
 
 
 main(){
 
-	var viewport = new Viewport('Henry');
+	//var surface = new Surface(7);
+
+	var viewport = new Viewport();
+
+	viewport.onMouseDown.addListener( (MouseData e) => print(e.coordinates) );
 
 }
