@@ -10,10 +10,10 @@ import './view/view.dart';
 
 main(){
 
-	//var surface = new Surface(7);
-
 	var viewport = new Viewport();
 
-	viewport.onMouseDown.addListener( (MouseData e) => print(e.coordinates) );
+	viewport.onMouseDown.addListener( (e) => print(e) );
+
+	var surface = new Surface(viewport);
 
 }

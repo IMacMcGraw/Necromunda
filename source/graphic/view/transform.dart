@@ -12,7 +12,7 @@ class Transform{
 	num get _screenWidth => _context.canvas.width;
 	num get _screenHeight => _context.canvas.height;
 
-	final CanvasRenderingContext2D _context;
+	final html.CanvasRenderingContext2D _context;
 
 
 	Transform(this._context, this._minScale, this._maxScale){
@@ -33,7 +33,8 @@ class Transform{
 	Rect get viewRect{
 		var halfWidth = _screenWidth/(2*absoluteScale);
 		var halfHeight = _screenHeight/(2*absoluteScale);
-		return new Rect(_offset.x - halfWidth, _offset.y - halfHeight, _offset.x + halfWidth, _offset.y + halfHeight);
+		return new geo.Rect(_offset.x - halfWidth, _offset.y - halfHeight,
+							_offset.x + halfWidth, _offset.y + halfHeight);
 	}
 
 	_apply(){

@@ -2,19 +2,38 @@
 part of geo;
 
 /// A vector class that represents a point on a plane.
-class Vector implements Shape2D{
+class Vector extends Geo{
 
-	num x, y;
+	num _x;
+	num get x => _x;
+	void set x(value){
+		_x = value;
+		modified();
+	}
 
-	Vector(this.x, this.y);
+	num _y;
+	num get y => _y;
+	void set y(value){
+		_x = value;
+		modified();
+	}
+
+	/// Scales this vector by a factor of 'a'.
+	scaleBy(num a){
+		this._x *= a;
+		this._y *= a;
+		modified();
+	}
+
+	Vector(this._x, this._y);
+
 	Vector.zero() : this(0, 0);
 
 	Vector operator +(Vector b) => new Vector(x + b.x, y + b.y);
 	Vector operator -(Vector b) => new Vector(x - b.x, y - b.y);
 	bool operator  ==(Vector b) => (x == b.x)&&(y == b.y);
+	Vector operator *(num a) => new Vector(a*x, a*y);
 
-	/// Scales this vector by a factor of 'a'.
-	scale(num a){ x *= a; y *= a;  }
 
 	/// Returns the length of this vector.
 	num get length => sqrt(x*x + y*y);
@@ -26,12 +45,19 @@ class Vector implements Shape2D{
 	Vector get orthogonal => new Vector(-y/length, x/length);
 
 	/// Returns the inverse of this vector: a new vector with the values of x and y interchanged.
-	Vector get _inverse => new Vector(y, x);
+	Vector get inverse => new Vector(y, x);
 
 	/// Returns the bouding box of this vector.
 	Rect get boundingBox => new Rect(x, y, 0, 0);
 
 	/// Returns a string representation of this object.
 	String toString() => 'Vector: ($x, $y)';
+
+	/// Returns the distance from this vector to vector b.
+	num distanceTo(Vector b) => (this - b).length;
+
+	/// Returns the nearest vector to this one from a list of vectors.
+	Vector nearest(List<Vector> vectors)
+		=> vectors.reduce( (a, b) => distanceTo(a) < distanceTo(b)? a : b );
 
 }

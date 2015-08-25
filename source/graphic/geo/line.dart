@@ -1,12 +1,29 @@
 
 part of geo;
 
-class Line implements Shape2D{
+class Line extends Geo{
 
-	Vector p1, p2;
+	Vector _p1, _p2;
 
-	Line(this.p1, this.p2);
-	Line.byValue(num x1, num y1, num x2, num y2) : this(new Vector(x1, y1), new Vector(x2, y2));
+	Vector get p1 => _p1;
+	Vector get p2 => _p2;
+
+	void set p1(Vector value){
+		replace(prev: _p1, next: value);
+	}
+	void set p2(Vector value){
+		replace(prev: _p1, next: value);
+	}
+
+	Line(num x1, num y1, num x2, num y2) :
+		this.fromAtoB(new Vector(x1, y1), new Vector(x2, y2));
+
+	Line.fromAtoB(Vector p1, Vector p2){
+		// NOTE: It is important that this be done with setters
+		// and not the backing fields (event subscription).
+		this.p1 = p1;
+		this.p2 = p2;
+	}
 
 	bool operator  ==(Line that) => (p1 == that.p1)&&(p2 == that.p2);
 
@@ -27,20 +44,20 @@ class Line implements Shape2D{
 
 
 	/// Is this line vertical?
-	bool get _isVertical => p1.x == p2.x;
+	bool get isVertical => p1.x == p2.x;
 
 	/// Is this line horizontal?
-	bool get _isHorizontal => p1.y == p2.y;
+	bool get isHorizontal => p1.y == p2.y;
 
 	/// Returns the inverse of this line, with x and y values interchanged.
-	Line get _inverse => new Line.byValue(p1.y, p1.x, p2.y, p2.x);
+	Line get inverse => new Line.fromAtoB(p1.inverse, p2.inverse);
 
 	/// Returns the slope of this line, its rise over run.
-	num get _slope => (p2.y - p1.y)/(p2.x - p1.x);
+	num get slope => (p2.y - p1.y)/(p2.x - p1.x);
 	/// Returns the vertical displacement of this line from the origin.
-	num get _offset => (p1.y - _slope*p1.x);
+	num get offset => (p1.y - slope*p1.x);
 	/// Evaluates this line at x: y = m*x + b.
-	num _evaluate(num x) => _slope*x + _offset;
+	num _evaluate(num x) => slope*x + offset;
 
 
 	/// Returns the point of intersection nearest to the origin of this line if it exists, and null otherwise.
@@ -50,17 +67,10 @@ class Line implements Shape2D{
 		// we can return the point of intersection nearest to the caller's origin.
 		Vector intersectWithVertical({Line skew, Line vert, bool skewIsCaller}){
 
-			Vector nearestAlongVertical(Vector origin, Vector a, Vector b){
-
-				var distanceA = (a.y - origin.y).abs();
-				var distanceB = (b.y - origin.y).abs();
-
-				return (distanceA < distanceB)? a : b;
-			}
 			// If both are vertical and share the same bounding box, they must intersect.
-			if(skew._isVertical){
-				if(skewIsCaller) return nearestAlongVertical(skew.p1, vert.p1, vert.p2);
-				else return nearestAlongVertical(vert.p1, skew.p1, skew.p2);
+			if(skew.isVertical){
+				if(skewIsCaller) return skew.p1.nearest([vert.p1, vert.p2]);
+				else return vert.p1.nearest([skew.p1, skew.p2]);
 			}
 
 			var y = skew._evaluate(vert.p1.x);
@@ -72,25 +82,27 @@ class Line implements Shape2D{
 		// The intersection with horizontal case is solved using the intersection with vertical algorithm
 		Vector intersectWithHorizontal({Line skew, Line hor, bool skewIsCaller}){
 			// Transform the problem to the vertical case by inverting all parameters.
-			var result = intersectWithVertical(skew:skew._inverse, vert:hor._inverse, skewIsCaller:skewIsCaller);
+			var result = intersectWithVertical(skew:skew.inverse, vert:hor.inverse, skewIsCaller:skewIsCaller);
 			// Undo the transform by inverting the result, and return the correct value.
-			return (result == null)? null : result._inverse;
+			return (result == null)? null : result.inverse;
 		}
 
 		// This is the most general case: neither line is horizontal or vertical.
 		Vector intersectWithSkew(Line P, Line Q){
-			// This is the x-value of the apparent intersection.
 
+			var pSlope = P.slope;
+			var qSlope = Q.slope;
+			var pOffset = P.offset;
+			var qOffset = Q.offset;
 
-			var pSlope = P._slope;
-			var qSlope = Q._slope;
+			// This is the parallel skew line case.
 			if(pSlope == qSlope){
-				// TODO: Special handling for skew intersection with parallel lines.
-				// I should write some kind of 'median' method in the vector class.
-				return null;
+				if(pOffset != qOffset) return null;
+				return P.p1.nearest([Q.p1, Q.p2]);
 			}
 
-			var x = (Q._offset - P._offset)/(P._slope - Q._slope);
+			// This is the x-value of the apparent intersection.
+			var x = (Q.offset - P.offset)/(P.slope - Q.slope);
 
 			var apparentIntersect = new Vector(x, P._evaluate(x));
 
@@ -103,10 +115,10 @@ class Line implements Shape2D{
 		// If the lines' bounding boxes do not overlap, then they do not intersect and we can return null.
 		if( !this.boundingBox.overlaps(that.boundingBox) ) return null;
 
-		if( that._isVertical )  return intersectWithVertical(skew:this, vert:that, skewIsCaller:true);
-		if( that._isHorizontal) return intersectWithHorizontal(skew:this, hor:that, skewIsCaller:true);
-		if( this._isVertical )  return intersectWithVertical(skew:that, vert:this, skewIsCaller:false);
-		if( this._isHorizontal) return intersectWithHorizontal(skew:that, hor:this, skewIsCaller:false);
+		if( that.isVertical )  return intersectWithVertical(skew:this, vert:that, skewIsCaller:true);
+		if( that.isHorizontal) return intersectWithHorizontal(skew:this, hor:that, skewIsCaller:true);
+		if( this.isVertical )  return intersectWithVertical(skew:that, vert:this, skewIsCaller:false);
+		if( this.isHorizontal) return intersectWithHorizontal(skew:that, hor:this, skewIsCaller:false);
 
 		return intersectWithSkew(this, that);
 	}

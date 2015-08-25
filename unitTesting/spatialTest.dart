@@ -4,7 +4,7 @@ library geoTest;
 import 'dart:html';
 
 import './dartTest/dartTest.dart';
-import '../source/geo/geo.dart';
+import '../source/graphic/geo/geo.dart';
 
 
 main() {
@@ -38,8 +38,8 @@ main() {
 				expect.areUnequal(a, c);
 			}),
 			new Test('Scaling test', () {
-				var a = new Vector(24, -2)
-					..scale(2);
+				var a = (new Vector(24, -2));
+				a.scaleBy(2);
 				var b = new Vector(48, -4);
 				expect.areEqual(a, b);
 			}),
@@ -124,67 +124,100 @@ main() {
 			new Test('Equality and constructor test.', (){
 				var A = new Vector(-1, -2);
 				var B = new Vector(4, 8);
-				var lineP = new Line(A, B);
-				var lineQ = new Line.byValue(-1, -2, 4, 8);
+				var lineP = new Line.fromAtoB(A, B);
+				var lineQ = new Line(-1, -2, 4, 8);
 				expect.areEqual(lineP, lineQ);
 			}),
 			new Test('Length test.', (){
-				var line = new Line.byValue(1, 2, 4, 6);
+				var line = new Line(1, 2, 4, 6);
 				expect.areEqual(line.length, 5);
 			}),
 			new Test('Unit vector test.', (){
-				var line = new Line.byValue(1, 2, 4, 6);
+				var line = new Line(1, 2, 4, 6);
 				expect.areEqual(line.unitVector, new Vector(0.6,0.8));
 			}),
 			new Test('Bounding box test.', (){
-				var lineP = new Line.byValue(3,7, 6, 2);
-				var lineQ = new Line.byValue(6, 7, 3, 2);
+				var lineP = new Line(3,7, 6, 2);
+				var lineQ = new Line(6, 7, 3, 2);
 				expect.areEqual(lineP.boundingBox, lineQ.boundingBox);
 			}),
 			new Test('Intersection test.', (){
 				Line p, q;
 				Vector intersect;
-				p = new Line.byValue(0, 2, 2, 0);
-				q = new Line.byValue(0, 0, 2, 2);
+				p = new Line(0, 2, 2, 0);
+				q = new Line(0, 0, 2, 2);
 				intersect = new Vector(1, 1);
 				expect.areEqual(p.intersectWith(q), intersect);
 				expect.areEqual(q.intersectWith(p), intersect);
 
-				p = new Line.byValue(-2, -2, 1, 1);
-				q = new Line.byValue(1, 1, 4, 0);
+				p = new Line(-2, -2, 1, 1);
+				q = new Line(1, 1, 4, 0);
 				intersect = new Vector(1, 1);
 				expect.areEqual(p.intersectWith(q), intersect);
 				expect.areEqual(q.intersectWith(p), intersect);
 
-				p = new Line.byValue(0, 0, 4, 4);
-				q = new Line.byValue(3, 2, 1, 0);
+				p = new Line(0, 0, 4, 4);
+				q = new Line(3, 2, 1, 0);
 				intersect = null;
 				expect.areEqual(p.intersectWith(q), intersect);
 				expect.areEqual(q.intersectWith(p), intersect);
 
-				p = new Line.byValue(0, 0, 0, 4);
-				q = new Line.byValue(-2, 2, 2, 2);
+				p = new Line(0, 0, 0, 4);
+				q = new Line(-2, 2, 2, 2);
 				intersect = new Vector(0, 2);
 				expect.areEqual(p.intersectWith(q), intersect);
 				expect.areEqual(q.intersectWith(p), intersect);
 
-				p = new Line.byValue(2, -8, 2, 8);
-				q = new Line.byValue(0, 0, 4, 4);
+				p = new Line(2, -8, 2, 8);
+				q = new Line(0, 0, 4, 4);
 				intersect = new Vector(2, 2);
 				expect.areEqual(p.intersectWith(q), intersect);
 				expect.areEqual(q.intersectWith(p), intersect);
 
-				p = new Line.byValue(0, 4, 8, 4);
-				q = new Line.byValue(2, 0, 4, 8);
+				p = new Line(0, 4, 8, 4);
+				q = new Line(2, 0, 4, 8);
 				intersect = new Vector(3, 4);
 				expect.areEqual(p.intersectWith(q), intersect);
 				expect.areEqual(q.intersectWith(p), intersect);
 
-				p = new Line.byValue(1, 2, 2, 3);
-				q = new Line.byValue(0, 0, 4, 4);
+				p = new Line(1, 2, 2, 3);
+				q = new Line(0, 0, 4, 4);
 				intersect = null;
 				expect.areEqual(p.intersectWith(q), intersect);
 				expect.areEqual(q.intersectWith(p), intersect);
+
+				p = new Line(0, 0, 4, 4);
+				q = new Line(1, 1, 2, 2);
+				intersect = new Vector(1, 1);
+				expect.areEqual(p.intersectWith(q), intersect);
+
+				p = new Line(0, 1, 0, 3);
+				q = new Line(0, 0, 0, 4);
+				intersect = new Vector(0, 0);
+				expect.areEqual(p.intersectWith(q), intersect);
+			}),
+			new Test('Underlying vector modification test', () {
+				var line = new Line(0, 1, 7, 4);
+				line.p1.x = 1;
+				expect.areEqual(line.p1.x, 1);
+			}),
+			new Test('Elaborate onModified event test', () {
+				bool modified = false;
+				Line line = new Line(0, 1, 7, 4);
+				line.onModified.addListener( (e) => modified = true );
+
+				expect.isFalse(modified);
+				line.p1.x = 1;
+				expect.areEqual(line.p1.x, 1);
+				expect.isTrue(modified);
+
+
+				var point = line.p1;
+				line.p1 = new Vector.zero();
+				modified = false;
+				point.x += 7;
+				expect.isFalse(modified);
+
 			}),
 		])
 	]);

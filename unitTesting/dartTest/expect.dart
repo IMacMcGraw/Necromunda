@@ -31,6 +31,7 @@ class expect{
 
 		if((actual >= expected + tolerance) || (actual <= expected - tolerance)){
 			var anomaly = new _anomaly('$actual does not equal $expected');
+			Test._addEntry(anomaly);
 		}
 	}
 }

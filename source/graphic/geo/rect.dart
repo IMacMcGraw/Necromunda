@@ -5,8 +5,8 @@ part of geo;
 /// Rects, depend only on the max and min x and y values of an
 /// instance. For this reason, a Rect with negative dimensions
 /// behaves equivalently to, and is equal to a Rect with positive
-/// dimensions, if both occupy the same region in 2-dimensional space.
-class Rect implements Shape2D{
+/// dimensions that occupies the same region in 2-dimensional space.
+class Rect extends Geo{
 
 	num _xMin, _yMin, _xMax, _yMax;
 
@@ -35,7 +35,7 @@ class Rect implements Shape2D{
 	num get yMax    => _yMax;
 
 
-	/// Sets this Rects xMin value. If the value given is greater
+	/// Sets this Rect's xMin value. If the value given is greater
 	/// than the existing xMax value, then this value will become
 	/// the new max value, and the old max will become the new min.
 	void set xMin(num val){
@@ -44,8 +44,9 @@ class Rect implements Shape2D{
 			_xMax = val;
 		}
 		else _xMin = val;
+		_modified.dispatch();
 	}
-	/// Sets this Rects xMin value. If the value given is greater
+	/// Sets this Rect's xMin value. If the value given is greater
 	/// than the existing xMax value, then this value will become
 	/// the new max value, and the old max will become the new min.
 	void set yMin(num val){
@@ -54,8 +55,9 @@ class Rect implements Shape2D{
 			_yMax = val;
 		}
 		else _yMin = val;
+		_modified.dispatch();
 	}
-	/// Sets this Rects xMin value. If the value given is greater
+	/// Sets this Rect's xMin value. If the value given is greater
 	/// than the existing xMax value, then this value will become
 	/// the new max value, and the old max will become the new min.
 	void set xMax(num val){
@@ -64,8 +66,9 @@ class Rect implements Shape2D{
 			_xMin = val;
 		}
 		else _xMax = val;
+		_modified.dispatch();
 	}
-	/// Sets this Rects xMin value. If the value given is greater
+	/// Sets this Rect's xMin value. If the value given is greater
 	/// than the existing xMax value, then this value will become
 	/// the new max value, and the old max will become the new min.
 	void set yMax(num val){
@@ -74,6 +77,7 @@ class Rect implements Shape2D{
 			_yMax = val;
 		}
 		else _xMax = val;
+		_modified.dispatch();
 	}
 
 	/// Gets the width of this Rect.
