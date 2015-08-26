@@ -30,15 +30,15 @@ class Source<T>{
 }
 
 class Stream<T>{
-	bool _ascendingPriority;
+	final bool _ascendingPriority;
 	bool get ascendingPriority => _ascendingPriority;
 
-	bool _interceptable;
+	final bool _interceptable;
 	bool get interceptable => _interceptable;
 
-	Stream._internal(this._ascendingPriority, this._interceptable);
-
 	final List<_Listener<T>> _ledger = new List<_Listener<T>>();
+
+	Stream._internal(this._ascendingPriority, this._interceptable);
 
 	/// Add a listener to this stream. Listeners are invoked in order of descending
 	/// priority. If a stream is interceptable, then the invocation of listeners is
@@ -53,14 +53,14 @@ class Stream<T>{
 		_ledger.removeWhere( (listener) => listener.callback == callback );
 	}
 
-	void addBranch(Source<T> source, {int priority: 0}){
-		_ledger.add( new _Listener(source.dispatch, priority));
-		_sortEntries();
-	}
-
-	void removeBranch(Source<T> source){
-		_ledger.removeWhere( (listener) => listener.callback == source.dispatch );
-	}
+//	void addBranch(Source<T> source, {int priority: 0}){
+//		_ledger.add( new _Listener(source.dispatch, priority));
+//		_sortEntries();
+//	}
+//
+//	void removeBranch(Source<T> source){
+//		_ledger.removeWhere( (listener) => listener.callback == source.dispatch );
+//	}
 
 	_sortEntries(){
 		var sortOrder = ascendingPriority? 1 : -1;

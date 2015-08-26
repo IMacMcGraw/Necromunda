@@ -5,8 +5,9 @@ library necromunda;
 //import 'dart:async' as async;
 
 import './events/events.dart';
-import './view/view.dart';
-
+import './graphic/view/view.dart';
+import './graphic/visible/visible.dart';
+import './graphic/colour/colour.dart';
 
 main(){
 
@@ -14,6 +15,10 @@ main(){
 
 	viewport.onMouseDown.addListener( (e) => print(e) );
 
-	var surface = new Surface(viewport);
+	var surface = new Surface();
+
+	var line = new Line(surface, 0, 0, 1000, 1000, Colour.black);
+
+
 
 }

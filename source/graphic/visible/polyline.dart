@@ -1,7 +1,7 @@
 
 part of visible;
 
-class Circle extends geo.Circle implements Visible{
+class Polyline extends geo.Polyline implements Visible{
 
 	final Surface surface;
 	Colour colour;

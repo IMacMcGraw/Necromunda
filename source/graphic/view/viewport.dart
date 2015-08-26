@@ -13,31 +13,33 @@ class Viewport extends Object with GameEvents, MouseEvents, ViewEvents{
 		_UpdateLoop();
 
 		html.window.onResize.listen( (e){
-			_viewChanged.dispatch();
-		});
+			var data = new geo.Rect(0, 0, html.window.innerWidth, html.window.innerHeight);
+			viewChanged(data);
+		} );
+
 		html.window.onMouseMove.listen( (e){
 			var data = new MouseData.fromMouseEvent(e);
-			_mouseMove.dispatch(data);
+			mouseMove(data);
 		});
 		html.window.onMouseDown.listen( (e){
 			var data = new MouseData.fromMouseEvent(e);
-			_mouseDown.dispatch(data);
+			mouseDown(data);
 		});
 		html.window.onMouseUp.listen( (e){
 			var data = new MouseData.fromMouseEvent(e);
-			_mouseUp.dispatch(data);
+			mouseUp(data);
 		});
 	}
 
 	void _RenderLoop([num timeStamp]){
-		_render.dispatch();
+		render();
 		html.window.requestAnimationFrame(_RenderLoop);
 	}
 
 	static const _updatePeriod = const Duration(milliseconds: 25);
 	final Stopwatch _stopWatch = new Stopwatch()..start();
 	void _UpdateLoop(){
-		_update.dispatch(new DeltaT.micro(_stopWatch.elapsedMicroseconds));
+		update(new DeltaT.micro(_stopWatch.elapsedMicroseconds));
 		new async.Timer(_updatePeriod, _UpdateLoop);
 		_stopWatch.reset();
 	}

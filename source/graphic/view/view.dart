@@ -11,7 +11,6 @@ import '../../events/events.dart';
 import '../visible/visible.dart';
 import '../geo/geo.dart' as geo;
 
-part 'eventMixins.dart';
 part 'viewport.dart';
 part 'surface.dart';
 part 'guiView.dart';

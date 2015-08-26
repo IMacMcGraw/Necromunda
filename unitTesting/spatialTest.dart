@@ -202,8 +202,10 @@ main() {
 				expect.areEqual(line.p1.x, 1);
 			}),
 			new Test('Elaborate onModified event test', () {
+
 				bool modified = false;
 				Line line = new Line(0, 1, 7, 4);
+				line.p1.x = 2;
 				line.onModified.addListener( (e) => modified = true );
 
 				expect.isFalse(modified);

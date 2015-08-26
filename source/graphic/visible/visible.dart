@@ -14,14 +14,10 @@ part 'polyline.dart';
 part 'rect.dart';
 
 
-abstract class Visible extends geo.Geo{
+abstract class Visible{
 
 	Colour get colour;
 
 	html.Path2D get path;
-
-	void _createPath();
-
-	//Stream<Null> get onModified;
 
 }

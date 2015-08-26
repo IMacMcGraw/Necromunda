@@ -5,46 +5,46 @@ part of view;
 /// A drawing surface.
 class Surface extends Object with GameEvents, MouseEvents, ViewEvents{
 	final int zIndex;
-	final Viewport _view = new Viewport();
+	final Viewport view = new Viewport();
 	final html.CanvasElement _canvas = new html.CanvasElement();
 	html.CanvasRenderingContext2D get _context => _canvas.context2D;
 
 
-	final Source<geo.Rect> _viewChanged
-		= new Source<geo.Rect>();
-
-	Stream<geo.Rect> get onViewChanged => _viewChanged.stream;
-
-
 	Surface([this.zIndex = 0])
 	{
+		html.document.body.append(_canvas);
 		_canvas.style.zIndex = zIndex.toString();
-		_stretchToFillScreen();
 
-		_view.onRender.addBranch(_render);
-		_view.onUpdate.addBranch(_update);
+		view.onRender.addListener(render);
+		view.onUpdate.addListener(update);
 
-		_view.onViewChanged.addListener( (e){
-			_stretchToFillScreen();
-			_viewChanged.dispatch(e);
-		});
+		view.onViewChanged.addListener(viewChanged);
 
-		_view.onMouseMove.addBranch(_mouseMove);
-		_view.onMouseDown.addBranch(_mouseDown);
-		_view.onMouseDown.addBranch(_mouseUp);
+		view.onMouseMove.addListener(mouseMove);
+		view.onMouseDown.addListener(mouseDown);
+		view.onMouseDown.addListener(mouseUp);
 	}
 
-	_stretchToFillScreen(){
-		this._canvas.width = html.window.innerWidth;
-		this._canvas.height = html.window.innerHeight;
+	@mustInvokeSuper
+	viewChanged(Rect e){
+		_canvas
+			..width = e.width
+			..height = e.height
+			..style.position = 'absolute'
+			..style.left = '0px'
+			..style.top = '0px';
+		super.viewChanged(e);
 	}
 
-	geo.Rect get _viewRect => new geo.Rect(0, 0, this._canvas.width, this._canvas.height);
+	bool _renderRequest = false;
+	void requestRender(){ _renderRequest = true; }
 
 
-	void Trace(Visible shape){
+
+	void trace(Visible shape){
 		var clr = shape.colour;
 		this._context.setStrokeColorHsl(clr.degreesH, clr.percentS, clr.percentL, clr.a);
+		this._context.lineWidth = 1;
 		this._context.stroke(shape.path);
 	}
 

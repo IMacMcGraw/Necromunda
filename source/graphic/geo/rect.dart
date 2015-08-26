@@ -6,7 +6,7 @@ part of geo;
 /// instance. For this reason, a Rect with negative dimensions
 /// behaves equivalently to, and is equal to a Rect with positive
 /// dimensions that occupies the same region in 2-dimensional space.
-class Rect extends Geo{
+class Rect extends Mutable implements Geo{
 
 	num _xMin, _yMin, _xMax, _yMax;
 
@@ -16,6 +16,7 @@ class Rect extends Geo{
 		_xMax = max(x1, x2);
 		_yMin = min(y1, y2);
 		_yMax = max(y1, y2);
+		modified();
 	}
 
 	/// Creates a rectangle between two opposing corners.
@@ -23,7 +24,6 @@ class Rect extends Geo{
 
 	/// Returns a rect with all zero components.
 	Rect.zero() : this(0,0,0,0);
-
 
 	/// Gets this Rect's xMin value.
 	num get xMin    => _xMin;
@@ -44,7 +44,7 @@ class Rect extends Geo{
 			_xMax = val;
 		}
 		else _xMin = val;
-		_modified.dispatch();
+		modified();
 	}
 	/// Sets this Rect's xMin value. If the value given is greater
 	/// than the existing xMax value, then this value will become
@@ -55,7 +55,7 @@ class Rect extends Geo{
 			_yMax = val;
 		}
 		else _yMin = val;
-		_modified.dispatch();
+		modified();
 	}
 	/// Sets this Rect's xMin value. If the value given is greater
 	/// than the existing xMax value, then this value will become
@@ -66,7 +66,7 @@ class Rect extends Geo{
 			_xMin = val;
 		}
 		else _xMax = val;
-		_modified.dispatch();
+		modified();
 	}
 	/// Sets this Rect's xMin value. If the value given is greater
 	/// than the existing xMax value, then this value will become
@@ -77,7 +77,7 @@ class Rect extends Geo{
 			_yMax = val;
 		}
 		else _xMax = val;
-		_modified.dispatch();
+		modified();
 	}
 
 	/// Gets the width of this Rect.

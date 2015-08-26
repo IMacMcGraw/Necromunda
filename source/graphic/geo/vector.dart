@@ -2,18 +2,18 @@
 part of geo;
 
 /// A vector class that represents a point on a plane.
-class Vector extends Geo{
+class Vector extends Mutable implements Geo{
 
 	num _x;
 	num get x => _x;
-	void set x(value){
+	void set x(num value){
 		_x = value;
 		modified();
 	}
 
 	num _y;
 	num get y => _y;
-	void set y(value){
+	void set y(num value){
 		_x = value;
 		modified();
 	}

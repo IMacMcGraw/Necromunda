@@ -1,31 +1,30 @@
 
 part of geo;
 
-class Line extends Geo{
+class Line extends DependentMutable implements Geo{
 
-	Vector _p1, _p2;
-
+	Vector _p1 = new Vector.zero();
 	Vector get p1 => _p1;
-	Vector get p2 => _p2;
-
 	void set p1(Vector value){
-		replace(prev: _p1, next: value);
+		_p1.x = value.x;
+		_p1.y = value.y;
+		modified();
 	}
+
+	Vector _p2 = new Vector.zero();
+	Vector get p2 => _p2;
 	void set p2(Vector value){
-		replace(prev: _p1, next: value);
+		_p2.x = value.x;
+		_p2.y = value.y;
+		modified();
 	}
 
 	Line(num x1, num y1, num x2, num y2) :
 		this.fromAtoB(new Vector(x1, y1), new Vector(x2, y2));
 
-	Line.fromAtoB(Vector p1, Vector p2){
-		// NOTE: It is important that this be done with setters
-		// and not the backing fields (event subscription).
-		this.p1 = p1;
-		this.p2 = p2;
-	}
+	Line.fromAtoB(this._p1, this._p2) : super();
 
-	bool operator  ==(Line that) => (p1 == that.p1)&&(p2 == that.p2);
+	bool operator == (Line that) => (p1 == that.p1)&&(p2 == that.p2);
 
 	/// Returns the vector from this line's origin to its endpoint.
 	Vector get vector => p2 - p1;

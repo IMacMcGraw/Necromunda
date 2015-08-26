@@ -29,4 +29,8 @@ class Colour{
 	int get percentS => (100*s).toInt();
 	int get percentL => (100*s).toInt();
 
+	static Colour get white => new Colour(0, 0, 1, 1);
+	static Colour get black => new Colour(0, 0, 0, 1);
+	static Colour get clear => new Colour(0, 0, 0, 0);
+
 }
